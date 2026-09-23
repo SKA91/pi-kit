@@ -56,7 +56,7 @@ setup:
         # --- Own extensions from github.com/SKA91/pi-kit (public, keyless
         #     HTTPS clone; loads extensions/ via the root pi manifest).
         #     Bump the ref after pushing changes to pick them up. ---
-        pi list | grep -q 'git:github.com/SKA91/pi-kit' || pi install git:github.com/SKA91/pi-kit@master
+        pi list | grep -q 'git:github.com/SKA91/pi-kit' || pi install git:github.com/SKA91/pi-kit@main
 
         # --- Calendar widget: the O365 client secret must be registered as
         #     an sbx custom secret on the HOST; without it the widget shows

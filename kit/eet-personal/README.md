@@ -11,7 +11,7 @@ have their own VMs and never see this.
 |---|---|---|
 | `npm:@juicesharp/rpiv-ask-user-question@2.11.0` | community | structured questionnaire tool |
 | `npm:@juicesharp/rpiv-todo@2.11.0` | community | live todo overlay |
-| `git:github.com/SKA91/pi-kit@master` | mine | extensions in `extensions/` |
+| `git:github.com/SKA91/pi-kit@main` | mine | extensions in `extensions/` |
 
 Plus the vendored Zeldoc.ai web-search extension (see below).
 
@@ -49,7 +49,7 @@ Any other sandbox works the same way — pass the kit dir to `sbx create
 
 ## Updating my extensions
 
-1. Edit/add under `extensions/`, commit, push to `master`.
+1. Edit/add under `extensions/`, commit, push to `main`.
 2. In the VM: `pi update git:github.com/SKA91/pi-kit` (reconciles the clone
    to the ref and reloads), or bump the ref in `spec.yaml` and re-apply the
    kit for recreate-time determinism.
@@ -69,9 +69,9 @@ pi install ~/pi-kit/extensions/<my-ext>
 
 Promote to everyone-sandbox-installed by pushing and re-applying the kit.
 
-## Note on `master` pinning
+## Note on `main` pinning
 
-The kit pins `@master` for now (keyless public clone, always-current).
-Trade-off: recreates re-clone whatever `master` is at that moment. For
+The kit pins `@main` for now (keyless public clone, always-current).
+Trade-off: recreates re-clone whatever `main` is at that moment. For
 full determinism, push a tag and pin `@<tag>` instead — pi skips pinned
 git refs on `pi update`, so moving requires bumping the ref explicitly.
