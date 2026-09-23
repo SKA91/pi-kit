@@ -1,0 +1,10 @@
+{
+  "name": "zeldoc-web-search",
+  "version": "1.0.0",
+  "description": "Web search and content fetching for Pi via Zeldoc.ai's private SearXNG endpoint. Vendored from https://docs.zeldoc.ai/search/pi/zeldoc_search.ts",
+  "keywords": ["pi-package"],
+  "license": "MIT",
+  "pi": {
+    "extensions": ["./index.ts"]
+  }
+}

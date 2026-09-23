@@ -1,0 +1,11 @@
+{
+  "name": "ska91-pi-kit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal pi coding agent extensions and sbx mixin kit (SKA91)",
+  "keywords": ["pi-package"],
+  "license": "MIT",
+  "pi": {
+    "extensions": ["./extensions/*/index.ts"]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "calendar-widget",
+  "version": "0.1.0",
+  "description": "O365 calendar widget for pi — next two meetings today, rendered below the editor (Microsoft Graph, client credentials flow)",
+  "keywords": ["pi-package"],
+  "license": "MIT",
+  "pi": {
+    "extensions": ["./index.ts"]
+  }
+}

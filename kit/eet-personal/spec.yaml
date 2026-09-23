@@ -1,0 +1,75 @@
+schemaVersion: "2"
+kind: mixin
+name: pi-personal
+displayName: Personal pi extensions (SKA91)
+description: >
+  Personal pi coding agent extensions for sandbox VMs. Installs community
+  extensions plus SKA91's own extensions from github.com/SKA91/pi-kit into
+  pi's global scope (~/.pi/agent) inside the VM. Personal to the sandbox
+  owner; colleagues get their own VM and never see this.
+  Also wires the O365 calendar credential: the client secret stays on the
+  host and is swapped in by the sbx egress proxy on the AAD token request
+  (client_secret_basic); tenant/client IDs are public and set as plain env
+  vars for the calendar-widget extension. The secret is registered as an
+  sbx custom secret on the HOST (never committed here):
+    sbx secret set-custom --env O365_CLIENT_SECRET \
+      --host login.microsoftonline.com --ref 'op://…'
+  Inside the VM O365_CLIENT_SECRET holds an "sbx-cs-…" placeholder; the
+  extension detects the prefix and sends the credential via the
+  Authorization header so the proxy can swap it.
+
+# --- Public identifiers (NOT secrets) --------------------------------------
+# Tenant ID and client ID identify the app; AAD sends them over the wire in
+# plain text on every token request anyway. The client secret is NOT set
+# here — it is an sbx custom secret (see description above), which appears
+# inside the VM as an "sbx-cs-…" placeholder in O365_CLIENT_SECRET.
+environment:
+  variables:
+    O365_TENANT_ID: "" # Entra ID > App registrations > Overview > Directory (tenant) ID
+    O365_CLIENT_ID: "" # Entra ID > App registrations > Overview > Application (client) ID
+
+permissions:
+  network:
+    allow:
+      - login.microsoftonline.com
+      - graph.microsoft.com
+
+setup:
+  install:
+    - command: |
+        set -euo pipefail
+
+        # --- pi must exist (installed by the base kit, e.g. sbx-kit) ---
+        if ! command -v pi > /dev/null 2>&1; then
+          echo "ERROR: pi not found — apply this mixin together with a kit that installs pi (e.g. sbx-kit), or re-run afterwards via 'sbx kit add'" >&2
+          exit 1
+        fi
+
+        # --- Community extensions (pinned: recreates stay deterministic and
+        #     'pi update' skips pinned specs).
+        #     No pi-web-access: it registers web_search/fetch_content, which
+        #     conflicts with the vendored Zeldoc search extension (only one
+        #     search extension can load). ---
+        pi list | grep -q 'rpiv-ask-user-question' || pi install npm:@juicesharp/rpiv-ask-user-question@2.11.0
+        pi list | grep -q 'rpiv-todo' || pi install npm:@juicesharp/rpiv-todo@2.11.0
+
+        # --- Own extensions from github.com/SKA91/pi-kit (public, keyless
+        #     HTTPS clone; loads extensions/ via the root pi manifest).
+        #     Bump the ref after pushing changes to pick them up. ---
+        pi list | grep -q 'git:github.com/SKA91/pi-kit' || pi install git:github.com/SKA91/pi-kit@master
+
+        # --- Calendar widget: the O365 client secret must be registered as
+        #     an sbx custom secret on the HOST; without it the widget shows
+        #     mock data. ---
+        echo "--- calendar credential ---"
+        if [ -n "${O365_CLIENT_SECRET:-}" ]; then
+          echo "O365_CLIENT_SECRET placeholder present (proxy swaps the real secret)."
+        else
+          echo "WARNING: O365_CLIENT_SECRET not set. On the HOST run:"
+          echo "  sbx secret set-custom --env O365_CLIENT_SECRET --host login.microsoftonline.com --ref 'op://…'"
+          echo "Until then the calendar widget shows mock data."
+        fi
+        echo "--- pi packages ---"
+        pi list
+      user: "1000"
+      description: Install personal pi extensions (community + SKA91/pi-kit)
