@@ -56,18 +56,18 @@ setup:
         # --- Own extensions from github.com/SKA91/pi-kit (public, keyless
         #     HTTPS clone; loads extensions/ via the root pi manifest).
         #     Bump the ref after pushing changes to pick them up. ---
-        pi list | grep -q 'git:github.com/SKA91/pi-kit' || pi install git:github.com/SKA91/pi-kit@main
+        pi list | grep -q 'git:github.com/SKA91/pi-kit' || pi install git:github.com/SKA91/pi-kit@master
 
         # --- Calendar widget: the O365 client secret must be registered as
         #     an sbx custom secret on the HOST; without it the widget shows
-        #     mock data. ---
+        #     "~" (no connection) instead of meetings. ---
         echo "--- calendar credential ---"
         if [ -n "${O365_CLIENT_SECRET:-}" ]; then
           echo "O365_CLIENT_SECRET placeholder present (proxy swaps the real secret)."
         else
           echo "WARNING: O365_CLIENT_SECRET not set. On the HOST run:"
           echo "  sbx secret set-custom --env O365_CLIENT_SECRET --host login.microsoftonline.com --ref 'op://…'"
-          echo "Until then the calendar widget shows mock data."
+          echo "Until then the calendar widget shows \"~\" (no connection)."
         fi
         echo "--- pi packages ---"
         pi list
