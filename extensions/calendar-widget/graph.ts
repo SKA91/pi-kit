@@ -84,10 +84,12 @@ export function parseGraphDateTime(dt: string | null | undefined, tz = "UTC"): D
   // `new Date(naive)` would parse it in the HOST's zone, which breaks on
   // non-UTC hosts), then subtract the target zone's offset:
   //   wall 14:00 in UTC+1  =>  instant 13:00Z.
-  const m = dt.trim().match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?(?:\.(\d{1,3}))?$/);
+  // Fractional seconds may carry Graph's full tick precision (7 digits,
+  // e.g. "07:30:00.0000000") — accept any length and truncate to ms.
+  const m = dt.trim().match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?(?:\.(\d+))?$/);
   if (!m) return null;
   const [, y, mo, da, h, mi, s = "0", ms = "0"] = m;
-  const asUTC = Date.UTC(Number(y), Number(mo) - 1, Number(da), Number(h), Number(mi), Number(s), Number(ms.padEnd(3, "0")));
+  const asUTC = Date.UTC(Number(y), Number(mo) - 1, Number(da), Number(h), Number(mi), Number(s), Number(ms.padEnd(3, "0").slice(0, 3)));
   const offsetMin = timeZoneOffsetMinutes(tz, new Date(asUTC));
   if (offsetMin === null) return null; // unknown tz — caller falls back
   return new Date(asUTC - offsetMin * 60_000);

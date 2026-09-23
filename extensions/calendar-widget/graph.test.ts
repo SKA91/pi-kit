@@ -67,6 +67,9 @@ const events = [
 assert.ok(parseGraphDateTime("2026-02-04T10:30:00.000"));
 assert.equal(parseGraphDateTime("garbage"), null);
 assert.equal(parseGraphDateTime(undefined), null);
+// Graph's tick precision: 7 fractional digits must not fail parsing (regression).
+const ticks = parseGraphDateTime("2026-02-04T10:30:00.0000000")!;
+assert.equal(ticks.toISOString(), "2026-02-04T10:30:00.000Z");
 
 // --- timezone handling (the VM runs UTC; the user lives in Copenhagen) ---
 // Naive string + explicit zone: 14:00 in Copenhagen (UTC+1 in February) is 13:00 UTC.
