@@ -50,8 +50,8 @@ setup:
         #     No pi-web-access: it registers web_search/fetch_content, which
         #     conflicts with the vendored Zeldoc search extension (only one
         #     search extension can load). ---
-        pi list | grep -q 'rpiv-ask-user-question' || pi install npm:@juicesharp/rpiv-ask-user-question@2.11.0
-        pi list | grep -q 'rpiv-todo' || pi install npm:@juicesharp/rpiv-todo@2.11.0
+        pi list | grep -q 'rpiv-ask-user-question' || pi install npm:@juicesharp/rpiv-ask-user-question@2.12.0
+        pi list | grep -q 'rpiv-todo' || pi install npm:@juicesharp/rpiv-todo@2.12.0
 
         # --- Own extensions from github.com/SKA91/pi-kit (public, keyless
         #     HTTPS clone; loads extensions/ via the root pi manifest).
